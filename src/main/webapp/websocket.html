@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html">
+    <title>websocket客户端</title>
+    <script type="text/javascript">
+        var socket;
+        if (!window.WebSocket) {
+            window.WebSocket = window.WebSocket || window.MozWebSocket;
+        }
+
+        if (window.WebSocket) {
+            socket = new WebSocket("ws://localhost:8888/websocket");
+            socket.onmessage = function (ev) {
+                var ta = document.getElementById("responseContent");
+                ta.value += ev.data + "\r\n";
+            };
+            socket.onopen = function (ev) {
+                var ta = document.getElementById("responseContent");
+                ta.value = "浏览器支持websocket\r\n";
+            };
+            socket.onclose = function (ev) {
+                var ta = document.getElementById("responseContent");
+                ta.value = "";
+                ta.value = "websocket已经关闭\r\n";
+            };
+        } else {
+            alert("浏览器不支持websocket");
+        }
+
+        function send(message) {
+            if (!window.WebSocket) {
+                return;
+            }
+
+            if (socket.readyState == WebSocket.OPEN) {
+                socket.send(message);
+            } else {
+                alert("websocket连接失败");
+            }
+        }
+    </script>
+</head>
+<body>
+<form onsubmit="return false">
+    <input type="text" name="message" value=""/>
+    <br/>
+    <input type="button" value="发送" onclick="send(this.form.message.value)">
+    <hr color="red"/>
+    <h2>客户端接收到服务端返回的信息</h2>
+    <textarea id="responseContent" style="width: 200px;height: 200px">
+
+    </textarea>
+</form>
+</body>
+</html>
