@@ -116,7 +116,10 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<Object> {
         System.out.println("服务端收到客户端的消息:" + request);
         TextWebSocketFrame webSocketFrame = new TextWebSocketFrame(new Date().toString() + ctx.channel().id() + "==>>" + request);
         //群发，服务端向每个客户端发消息
-        NettyConfig.group.writeAndFlush(webSocketFrame);
+        //NettyConfig.group.writeAndFlush(webSocketFrame);
+
+        //返回当前客户端
+        ctx.writeAndFlush(webSocketFrame);
     }
 
     /**
